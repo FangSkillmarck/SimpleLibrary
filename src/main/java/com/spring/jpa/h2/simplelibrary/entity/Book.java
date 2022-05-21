@@ -1,43 +1,49 @@
 package com.spring.jpa.h2.simplelibrary.entity;
 
-import lombok.*;
-
 import javax.persistence.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "books")
 public class Book {
-
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private long id;
+  @Column(name = "title")
   private String title;
-
-  private String author;
-
-  private String isbn;
-
-  private String genre;
-
-  private String ReaderName;
-
-  private boolean borrowed = Boolean.FALSE;
-
-  public Book(String title, String author, String isbn, String genre, String readerName, boolean b) {
+  @Column(name = "description")
+  private String description;
+  @Column(name = "published")
+  private boolean published;
+  public Book() {
   }
-
-  public boolean isBorrowed() {
-    return borrowed;
+  public Book(String title, String description, boolean published) {
+    this.title = title;
+    this.description = description;
+    this.published = published;
   }
-  public void setBorrowed(boolean isBorrowed) {
-    this.borrowed = isBorrowed;
+  public long getId() {
+    return id;
   }
-
-
+  public String getTitle() {
+    return title;
+  }
+  public void setTitle(String title) {
+    this.title = title;
+  }
+  public String getDescription() {
+    return description;
+  }
+  public void setDescription(String description) {
+    this.description = description;
+  }
+  public boolean isPublished() {
+    return published;
+  }
+  public void setPublished(boolean isPublished) {
+    this.published = isPublished;
+  }
+  @Override
+  public String toString() {
+    return "Tutorial [id=" + id + ", title=" + title + ", desc=" + description + ", published=" + published + "]";
+  }
 }

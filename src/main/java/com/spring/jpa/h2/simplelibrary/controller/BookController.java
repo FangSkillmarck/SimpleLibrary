@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.spring.jpa.h2.simplelibrary.entity.Book;
 import com.spring.jpa.h2.simplelibrary.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,18 +23,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 //@CrossOrigin(origins = "http://localhost:8081")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/books")
 public class BookController {
     @Autowired
     BookRepository bookRepository;
-    @GetMapping("/books")
-    public ResponseEntity<List<Book>> getAllBooks(@RequestParam(required = false) String title) {
+    @GetMapping("/")
+    public ResponseEntity<List<Book>> getAllBooks(@RequestParam(required = false) String title,  @RequestParam(required = false) String author,  @RequestParam(required = false) String genre) {
         try {
             List<Book> books = new ArrayList<>();
-            if (title == null)
-                books.addAll(bookRepository.findAll());
-            else {
+            if (title != null) {
                 books.addAll(bookRepository.findByTitleContaining(title));
+            } else if (author != null){
+                books.addAll(bookRepository.findByAuthorOrderByAuthor(author));
+            } else if (genre != null){
+                books.addAll(bookRepository.findByGenreOrderByGenre(genre));
+            } else {books.addAll(bookRepository.findAll(Sort.by(Sort.Direction.ASC, "title")));
             }
             if (books.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -43,12 +47,12 @@ public class BookController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/books/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable("id") long id) {
         Optional<Book> bookData = bookRepository.findById(id);
         return bookData.map(book -> new ResponseEntity<>(book, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    @PostMapping("/books")
+    @PostMapping("/")
     public ResponseEntity<Book> createBook(@RequestBody Book book) {
         try {
             Book _book = bookRepository
@@ -58,7 +62,7 @@ public class BookController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PutMapping("/books/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable("id") long id, @RequestBody Book book) {
         Optional<Book> bookData = bookRepository.findById(id);
         if (bookData.isPresent()) {
@@ -74,7 +78,7 @@ public class BookController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @DeleteMapping("/books/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteBook(@PathVariable("id") long id) {
         try {
             bookRepository.deleteById(id);
@@ -83,7 +87,7 @@ public class BookController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @DeleteMapping("/books")
+    @DeleteMapping("/")
     public ResponseEntity<HttpStatus> deleteAllBooks() {
         try {
             bookRepository.deleteAll();
@@ -92,7 +96,7 @@ public class BookController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/books/borrowed")
+    @GetMapping("/borrowed")
     public ResponseEntity<List<Book>> findByPublished() {
         try {
             List<Book> books = bookRepository.findByBorrowed(true);

@@ -2,6 +2,8 @@ package com.spring.jpa.h2.simplelibrary.entity;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -12,14 +14,19 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name", nullable = false)
+    @Column( nullable = false)
     private String name;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Book> bookList = new ArrayList<>();
+
 
     public Customer() {
     }
 
-    public Customer(String name) {
+    public Customer(String name, List<Book> bookList) {
         this.name = name;
+        this.bookList = bookList;
     }
 
     public long getId() {
@@ -31,6 +38,12 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public List<Book> getBookList() {
+        return bookList;
+    }
+    public void setBookList(List<Book> bookList) {
+        this.bookList = bookList;
     }
 
 }

@@ -17,19 +17,19 @@ public class Book {
 
   private String genre;
 
-  private String readerName;
+  private String customerName;
 
   private boolean borrowed;
 
   public Book() {
   }
 
-  public Book(String title, String author, String isbn, String genre, String readerName, boolean borrowed) {
+  public Book(String title, String author, String isbn, String genre, String customerName, boolean borrowed) {
     this.title = title;
     this.author = author;
     this.isbn = isbn;
     this.genre = genre;
-    this.readerName = readerName;
+    this.customerName = customerName;
     this.borrowed = borrowed;
   }
 
@@ -67,12 +67,12 @@ public class Book {
     this.genre = genre;
   }
 
-  public String getReaderName() {
-    return readerName;
+  public String getCustomerName() {
+    return customerName;
   }
 
-  public void setReaderName(String readerName) {
-    this.readerName = readerName;
+  public void setCustomerName(String customerName) {
+    this.customerName = customerName;
   }
 
   public boolean isBorrowed() {

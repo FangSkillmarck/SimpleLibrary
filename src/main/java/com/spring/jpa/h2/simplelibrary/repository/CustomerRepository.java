@@ -1,14 +1,14 @@
 package com.spring.jpa.h2.simplelibrary.repository;
 
-import com.spring.jpa.h2.simplelibrary.entity.Reader;
+import com.spring.jpa.h2.simplelibrary.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ReaderRepository extends JpaRepository<Reader, Long> {
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     //List<Book> findAllByTitleContainingByTitleAsc(String title);
-    List<Reader> findByFirstNameContaining(String firstName);
+    List<Customer> findByNameContaining(String name);
 
    // List<Book> findByPublished(boolean published);
    // List<Book> findAuthorContaining(String author);

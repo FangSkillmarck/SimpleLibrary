@@ -52,7 +52,7 @@ public class BookController {
     public ResponseEntity<Book> createBook(@RequestBody Book book) {
         try {
             Book _book = bookRepository
-                    .save(new Book(book.getTitle(),book.getAuthor(), book.getIsbn(),  book.getGenre(), book.getReaderName(), false));
+                    .save(new Book(book.getTitle(),book.getAuthor(), book.getIsbn(),  book.getGenre(), book.getCustomerName(), false));
             return new ResponseEntity<>(_book, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -67,7 +67,7 @@ public class BookController {
             _book.setAuthor(book.getAuthor());
             _book.setIsbn(book.getIsbn());
             _book.setGenre(book.getGenre());
-            _book.setReaderName(book.getReaderName());
+            _book.setCustomerName(book.getCustomerName());
             _book.setBorrowed(book.isBorrowed());
             return new ResponseEntity<>(bookRepository.save(_book), HttpStatus.OK);
         } else {

@@ -8,42 +8,78 @@ public class Book {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
-  @Column(name = "title")
+
   private String title;
-  @Column(name = "description")
-  private String description;
-  @Column(name = "published")
-  private boolean published;
+
+  private String author;
+
+  private String isbn;
+
+  private String genre;
+
+  private String readerName;
+
+  private boolean borrowed;
+
   public Book() {
   }
-  public Book(String title, String description, boolean published) {
+
+  public Book(String title, String author, String isbn, String genre, String readerName, boolean borrowed) {
     this.title = title;
-    this.description = description;
-    this.published = published;
+    this.author = author;
+    this.isbn = isbn;
+    this.genre = genre;
+    this.readerName = readerName;
+    this.borrowed = borrowed;
   }
+
   public long getId() {
     return id;
   }
+
   public String getTitle() {
     return title;
   }
   public void setTitle(String title) {
     this.title = title;
   }
-  public String getDescription() {
-    return description;
+
+  public String getAuthor() {
+    return author;
   }
-  public void setDescription(String description) {
-    this.description = description;
+  public void setAuthor(String author) {
+    this.author = author;
   }
-  public boolean isPublished() {
-    return published;
+
+  public String getIsbn() {
+    return isbn;
   }
-  public void setPublished(boolean isPublished) {
-    this.published = isPublished;
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
   }
-  @Override
-  public String toString() {
-    return "Tutorial [id=" + id + ", title=" + title + ", desc=" + description + ", published=" + published + "]";
+
+  public String getGenre() {
+    return genre;
   }
+
+  public void setGenre(String genre) {
+    this.genre = genre;
+  }
+
+  public String getReaderName() {
+    return readerName;
+  }
+
+  public void setReaderName(String readerName) {
+    this.readerName = readerName;
+  }
+
+  public boolean isBorrowed() {
+    return borrowed;
+  }
+  public void setBorrowed(boolean isBorrowed) {
+    this.borrowed = isBorrowed;
+  }
+
 }

@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import com.spring.jpa.h2.simplelibrary.entity.Book;
 import com.spring.jpa.h2.simplelibrary.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,16 +22,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class BookController {
 
-    @Autowired
+    final
     BookRepository bookRepository;
+
+    public BookController(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
     @GetMapping("/books")
     public ResponseEntity<List<Book>> getAllBooks(@RequestParam(required = false) String title) {
         try {
             List<Book> books = new ArrayList<>();
             if (title == null)
-                bookRepository.findAll().forEach(books::add);
+                books.addAll(bookRepository.findAll());
             else
-                bookRepository.findByTitleContaining(title).forEach(books::add);
+                books.addAll(bookRepository.findByTitleContaining(title));
             if (books.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -44,11 +48,7 @@ public class BookController {
     @GetMapping("/books/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable("id") long id) {
         Optional<Book> bookData = bookRepository.findById(id);
-        if (bookData.isPresent()) {
-            return new ResponseEntity<>(bookData.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return bookData.map(book -> new ResponseEntity<>(book, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     @PostMapping("/books")
     public ResponseEntity<Book> createBook(@RequestBody Book book) {

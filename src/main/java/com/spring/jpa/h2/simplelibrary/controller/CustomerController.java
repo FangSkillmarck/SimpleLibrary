@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.spring.jpa.h2.simplelibrary.entity.Book;
 import com.spring.jpa.h2.simplelibrary.entity.Customer;
 import com.spring.jpa.h2.simplelibrary.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,25 @@ public class CustomerController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/customers/{id}/books")
+    public ResponseEntity<Customer> addBooksToCustomer(@PathVariable("id") long id, @RequestBody Book book){
+        Optional<Customer> customerData = customerRepository.findById(id);
+        if (customerData.isPresent()) {
+            Customer _customer = customerData.get();
+            if ( _customer.getBookList().size() <2 ){
+            _customer.getBookList().add(book);
+            }
+            else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            return new ResponseEntity<>(customerRepository.save(_customer), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping("/customers/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable("id") long id, @RequestBody Customer customer) {
         Optional<Customer> customerData = customerRepository.findById(id);
@@ -68,6 +88,7 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @DeleteMapping("/customers/{id}")
     public ResponseEntity<HttpStatus> deleteCustomer(@PathVariable("id") long id) {
         try {

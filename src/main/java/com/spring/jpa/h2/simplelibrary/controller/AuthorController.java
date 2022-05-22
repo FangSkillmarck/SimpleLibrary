@@ -49,6 +49,19 @@ public class AuthorController {
         }
     }
 
+    @PostMapping("authors/{id}/books")
+    public ResponseEntity<Author> addBooksToAuthor(@PathVariable("id") long id, @RequestBody Book book){
+        Optional<Author> authorData = authorRepository.findById(id);
+        if (authorData.isPresent()) {
+            Author _author = authorData.get();
+            _author.getBookList().add(book);
+
+            return new ResponseEntity<>(authorRepository.save(_author), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping("/authors/{id}")
     public ResponseEntity<Author> updateAuthor(@PathVariable("id") long id, @RequestBody Author author) {
         Optional<Author> authorData = authorRepository.findById(id);

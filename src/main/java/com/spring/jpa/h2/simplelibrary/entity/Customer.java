@@ -17,8 +17,8 @@ public class Customer {
     @Column( nullable = false)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Book> bookList = new ArrayList<>();
+   @OneToMany(cascade = CascadeType.ALL)
+   private List<Book> bookList = new ArrayList<>();
 
 
     public Customer() {
@@ -35,12 +35,11 @@ public class Customer {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
     public List<Book> getBookList() {
-        return bookList;
+     return bookList;
     }
     public void setBookList(List<Book> bookList) {
         this.bookList = bookList;

@@ -15,20 +15,15 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/authors")
+@RequestMapping("/api")
 public class AuthorController {
     @Autowired
     AuthorRepository authorRepository;
-    @GetMapping("/")
-    public ResponseEntity<List<Author>> getAllAuthors(@RequestParam(required = false) String name) {
+    @GetMapping("/authors")
+    public ResponseEntity<List<Author>> getAllAuthors() {
         try {
             List<Author> authors = new ArrayList<>();
-            if (name != null) {
-                authors.addAll(authorRepository.findByNameContaining(name));
-            } else {
-                authors.addAll(authorRepository.findAll(Sort.by(Sort.Direction.ASC, "name")));
-            }
-
+            authors.addAll(authorRepository.findAll(Sort.by(Sort.Direction.ASC, "name")));
             if (authors.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -37,25 +32,24 @@ public class AuthorController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/{id}")
+    @GetMapping("/authors/{id}")
     public ResponseEntity<Author> getAuthorById(@PathVariable("id") long id) {
         Optional<Author> authorData = authorRepository.findById(id);
         return authorData.map(author -> new ResponseEntity<>(author, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    @PostMapping("/")
+
+    @PostMapping("/authors")
     public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
         try {
             Author _author = authorRepository
-                    .save(new Author(author.getName(),author.getNationality(), author.getBookList()));
+                    .save(new Author(author.getName(), author.getNationality(), author.getBookList()));
             return new ResponseEntity<>(_author, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
-
-    @PutMapping("/{id}")
+    @PutMapping("/authors/{id}")
     public ResponseEntity<Author> updateAuthor(@PathVariable("id") long id, @RequestBody Author author) {
         Optional<Author> authorData = authorRepository.findById(id);
         if (authorData.isPresent()) {
@@ -69,7 +63,7 @@ public class AuthorController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/authors/{id}")
     public ResponseEntity<HttpStatus> deleteAuthor(@PathVariable("id") long id) {
         try {
             authorRepository.deleteById(id);
@@ -78,7 +72,7 @@ public class AuthorController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @DeleteMapping("/")
+    @DeleteMapping("/authors")
     public ResponseEntity<HttpStatus> deleteAllAuthors() {
         try {
             authorRepository.deleteAll();

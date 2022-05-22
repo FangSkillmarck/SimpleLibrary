@@ -7,12 +7,4 @@ import java.util.List;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-    //List<Book> findAllByTitleContainingByTitleAsc(String title);
-    List<Customer> findByNameContaining(String name);
-
-   // List<Book> findByPublished(boolean published);
-   // List<Book> findAuthorContaining(String author);
-    //List<Book> findByReader(String readerName);
-   //List<Book> findByBorrowed(boolean borrowed);
-   // List<Book> findByIsbn(String isbn);
 }

@@ -2,10 +2,12 @@ package com.spring.jpa.h2.simplelibrary.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.spring.jpa.h2.simplelibrary.entity.Book;
 import com.spring.jpa.h2.simplelibrary.entity.Customer;
+import com.spring.jpa.h2.simplelibrary.repository.BookRepository;
 import com.spring.jpa.h2.simplelibrary.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomerController {
     @Autowired
     CustomerRepository customerRepository;
+    BookRepository bookRepository;
+
     @GetMapping("/customers")
     public ResponseEntity<List<Customer>> getAllCustomers() {
         try {
@@ -41,11 +45,26 @@ public class CustomerController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/customers/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable("id") long id) {
         Optional<Customer> customerData = customerRepository.findById(id);
         return customerData.map(customer -> new ResponseEntity<>(customer, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @GetMapping("/customers/{id}/borrowed_books")
+    public ResponseEntity<List<Book>> findByBorrowed(@PathVariable("id") long id) {
+        Optional<Customer> customerData = customerRepository.findById(id);
+        if (customerData.isPresent()) {
+            Customer _customer = customerData.get();
+
+
+            return new ResponseEntity<>( _customer.getBookList(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping("/customers")
     public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
         try {
@@ -57,13 +76,14 @@ public class CustomerController {
         }
     }
 
+    //Customer can borrow 2 books max.
     @PostMapping("/customers/{id}/books")
-    public ResponseEntity<Customer> addBooksToCustomer(@PathVariable("id") long id, @RequestBody Book book){
+    public ResponseEntity<Customer> addBooksToCustomer(@PathVariable("id") long id, @RequestBody Book bookDetails){
         Optional<Customer> customerData = customerRepository.findById(id);
         if (customerData.isPresent()) {
             Customer _customer = customerData.get();
             if ( _customer.getBookList().size() <2 ){
-            _customer.getBookList().add(book);
+            _customer.getBookList().add(bookDetails);
             }
             else {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);

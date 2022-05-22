@@ -32,7 +32,7 @@ public class BookController {
         try {
             List<Book> books = new ArrayList<>();
             if (title != null) {
-                books.addAll(bookRepository.findByTitleContaining(title));
+                books.addAll(bookRepository.findByTitleOrderByTitle(title));
             } else if (author != null){
                 books.addAll(bookRepository.findByAuthorOrderByAuthor(author));
             } else if (genre != null){
@@ -97,7 +97,7 @@ public class BookController {
         }
     }
     @GetMapping("/borrowed")
-    public ResponseEntity<List<Book>> findByPublished() {
+    public ResponseEntity<List<Book>> findByBorrowed() {
         try {
             List<Book> books = bookRepository.findByBorrowed(true);
             if (books.isEmpty()) {

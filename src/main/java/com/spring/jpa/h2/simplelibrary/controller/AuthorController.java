@@ -18,7 +18,8 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class AuthorController {
     @Autowired
-    AuthorRepository authorRepository;
+    private AuthorRepository authorRepository;
+
     @GetMapping("/authors")
     public ResponseEntity<List<Author>> getAllAuthors() {
         try {
@@ -32,6 +33,7 @@ public class AuthorController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/authors/{id}")
     public ResponseEntity<Author> getAuthorById(@PathVariable("id") long id) {
         Optional<Author> authorData = authorRepository.findById(id);

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/books")
 public class BookController {
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
     @GetMapping("/")
     public ResponseEntity<List<Book>> getAllBooks(@RequestParam(required = false) String title,  @RequestParam(required = false) String author,  @RequestParam(required = false) String genre) {
         try {
@@ -56,7 +56,7 @@ public class BookController {
     public ResponseEntity<Book> createBook(@RequestBody Book book) {
         try {
             Book _book = bookRepository
-                    .save(new Book(book.getTitle(),book.getAuthor(), book.getIsbn(),  book.getGenre(), book.getCustomerName(), false));
+                    .save(new Book(book.getTitle(), book.getAuthor(), book.getIsbn(), book.getGenre()));
             return new ResponseEntity<>(_book, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,8 +71,6 @@ public class BookController {
             _book.setAuthor(book.getAuthor());
             _book.setIsbn(book.getIsbn());
             _book.setGenre(book.getGenre());
-            _book.setCustomerName(book.getCustomerName());
-            _book.setBorrowed(book.isBorrowed());
             return new ResponseEntity<>(bookRepository.save(_book), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -92,18 +90,6 @@ public class BookController {
         try {
             bookRepository.deleteAll();
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    @GetMapping("/borrowed")
-    public ResponseEntity<List<Book>> findByBorrowed() {
-        try {
-            List<Book> books = bookRepository.findByBorrowed(true);
-            if (books.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(books, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

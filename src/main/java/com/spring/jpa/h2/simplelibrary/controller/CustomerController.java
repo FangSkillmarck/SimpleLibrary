@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class CustomerController {
     @Autowired
-    CustomerRepository customerRepository;
-    BookRepository bookRepository;
+    private CustomerRepository customerRepository;
+    private BookRepository bookRepository;
 
     @GetMapping("/customers")
     public ResponseEntity<List<Customer>> getAllCustomers() {
@@ -76,7 +76,7 @@ public class CustomerController {
         }
     }
 
-    //Customer can borrow 2 books max.
+    //Customer can borrow 2 books max. @Autowired
     @PostMapping("/customers/{id}/books")
     public ResponseEntity<Customer> addBooksToCustomer(@PathVariable("id") long id, @RequestBody Book bookDetails){
         Optional<Customer> customerData = customerRepository.findById(id);
@@ -88,6 +88,26 @@ public class CustomerController {
             else {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
+
+            return new ResponseEntity<>(customerRepository.save(_customer), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+   /* @PostMapping("/customers/{id}/{bookId}")
+    public ResponseEntity<Customer> addBooksToCustomer(@PathVariable("id") long id, @PathVariable("bookId") long bookId){
+        Customer _customer = customerRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No this customer"));
+        Book _book =bookRepository.findById(bookId).orElseThrow(() -> new NoSuchElementException("No this book"));
+        _customer.getBookList().add(_book);
+        return  new ResponseEntity<>(customerRepository.save(_customer), HttpStatus.OK);
+    }*/
+
+    @PutMapping("/customers/{id}/books")
+    public ResponseEntity<Customer> returnBooksFromCustomer(@PathVariable("id") long id, @RequestBody Book bookDetails){
+        Optional<Customer> customerData = customerRepository.findById(id);
+        if (customerData.isPresent()) {
+            Customer _customer = customerData.get();
+            _customer.getBookList().remove(bookDetails);
 
             return new ResponseEntity<>(customerRepository.save(_customer), HttpStatus.OK);
         } else {
@@ -127,5 +147,4 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

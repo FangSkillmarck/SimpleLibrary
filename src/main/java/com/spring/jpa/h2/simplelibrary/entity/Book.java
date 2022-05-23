@@ -17,20 +17,15 @@ public class Book {
 
   private String genre;
 
-  private String customerName;
-
-  private boolean borrowed;
-
   public Book() {
   }
 
-  public Book(String title, String author, String isbn, String genre, String customerName, boolean borrowed) {
+  public Book(String title, String author, String isbn, String genre) {
     this.title = title;
     this.author = author;
     this.isbn = isbn;
     this.genre = genre;
-    this.customerName = customerName;
-    this.borrowed = borrowed;
+
   }
 
   public long getId() {
@@ -66,20 +61,4 @@ public class Book {
   public void setGenre(String genre) {
     this.genre = genre;
   }
-
-  public String getCustomerName() {
-    return customerName;
-  }
-
-  public void setCustomerName(String customerName) {
-    this.customerName = customerName;
-  }
-
-  public boolean isBorrowed() {
-    return borrowed;
-  }
-  public void setBorrowed(boolean isBorrowed) {
-    this.borrowed = isBorrowed;
-  }
-
 }
